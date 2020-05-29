@@ -4,4 +4,4 @@ This is an app where users gather together to share different approaches to ever
 
 ## Description
 
-This app is being created for the 
+This app is being created for the #SpaceApps Covid-19 Challenge.
