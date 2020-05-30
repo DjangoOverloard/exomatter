@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:exom/posts/postCreation.dart';
 import 'package:flutter/material.dart';
 
 import '../homeFuncs.dart';
 import 'package:exom/posts/postPage.dart';
 
-createPost(title, description, tags, context) async {
+createPost(context) async {
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -14,9 +15,9 @@ createPost(title, description, tags, context) async {
           ));
   await Firestore.instance.collection('Posts').document().setData({
     'time': DateTime.now(),
-    'title': title,
-    'description': description,
-    'tags': tags,
+    'title': titleControl.text.trim(),
+    'description': descriptionControl.text.trim(),
+    'tag': selectedTag,
     'userId': userDoc.documentID,
     'nickname': userDoc.data['nickname'],
     'upvotes': [],

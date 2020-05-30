@@ -58,20 +58,13 @@ class _PostWidState extends State<PostWid> {
               'Tags',
               style: textTheme.caption,
             ),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: List.generate(
-                widget.doc.data['tags'].length,
-                (index) => Chip(
+            Chip(
                   backgroundColor: Colors.teal,
                   label: Text(
-                    widget.doc.data['tags'][index],
+                    widget.doc.data['tags'][0],
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-            ),
-          ),
           Divider(
             height: 0.0,
           ),

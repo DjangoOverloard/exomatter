@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:exom/posts/postFuncs.dart';
 import 'package:exom/posts/postPage.dart';
 import 'package:exom/widgets/container.dart';
 import 'package:flutter/cupertino.dart';
@@ -556,7 +557,7 @@ class _PostCreationState extends State<PostCreation> {
                               child: GestureDetector(
                                 onTap: (){
                                   if(checkEverything()){
-                                    
+                                    createPost(context);
                                   }
                                 },
                                                               child: Opacity(
