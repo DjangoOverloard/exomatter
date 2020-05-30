@@ -6,6 +6,7 @@ import 'postFuncs.dart';
 import 'dart:async';
 
 List<DocumentSnapshot> posts = [];
+DocumentSnapshot tagDoc;
 
 class PostPage extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   ScrollController scr = new ScrollController();
   Timer updateTimer;
+  bool ready = false;
 
   scrListener() async {
     final pos = scr.position.pixels;
@@ -39,16 +41,26 @@ class _PostPageState extends State<PostPage> {
       updateListener();
     });
   }
+  getTag()async{
+    if(tagDoc == null){
+      await Firestore.instance.collection('Tags').document('tags').get().then((ds){
+        tagDoc = ds;
+      });
+    }
+  }
 
   @override
   void initState() {
     if (posts.length == 0) {
-      fetchPosts(() {
+      fetchPosts(() async{
         if (mounted) {
+    await getTag();
+  ready = true;
           setState(() {});
         }
       }, (val) {}, true);
     } else {
+      ready = true;
       checkNewPosts(() {
         if (mounted) {
           setState(() {});
@@ -66,7 +78,7 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        ListView.separated(
+        ready?ListView.separated(
           controller: scr,
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
@@ -99,6 +111,12 @@ class _PostPageState extends State<PostPage> {
           },
           separatorBuilder: (context, i) => SizedBox(
             height: 8.0,
+          ),
+        ):Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(
+              Colors.teal, 
+            ),
           ),
         ),
         AnimatedPositioned(

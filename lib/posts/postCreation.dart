@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:exom/posts/postPage.dart';
 import 'package:exom/widgets/container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class PostCreation extends StatefulWidget {
 
 class _PostCreationState extends State<PostCreation> {
   bool snackbaractive = false;
+  String selectedTag = '';
  getPath() async {
     temp = (await getTemporaryDirectory()).path;
   }
@@ -425,6 +427,65 @@ class _PostCreationState extends State<PostCreation> {
                                     ),
                                   ); 
                                 })
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(selectedTag != ''?'Tag':'Select a tag',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.6),
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            AnimatedSwitcher(
+                              duration: Duration(milliseconds: 300),
+                                                          child: selectedTag == ''? Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: List.generate(tagDoc.data['tags'].length, (index){
+                                  return Container(
+                                    height: 30, 
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10, right: 10),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Text(tagDoc.data['tags'][index], style: TextStyle(
+                                            color: Colors.white, fontSize: 16, height: 1.0, 
+                                          )),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ):Container(
+                                height: 30, 
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(selectedTag, style: TextStyle(
+                                        color: Colors.white, fontSize: 16
+                                      )),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 5),
+                                                                              child: Container(
+                                          height: 20, 
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle, 
+                                            color: Colors.black38, 
+                                          ),
+                                          child: Center(
+                                            child: Icon(Icons.close, color: Colors.red, size: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                             Padding(

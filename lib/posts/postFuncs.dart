@@ -64,6 +64,7 @@ deletePost(doc, context) async {
   Navigator.of(context).pop();
 }
 
+
 bool voting = false;
 var voteLoading = '';
 changeVote(isUpvote, doneCallback, doc) async {
