@@ -2,6 +2,7 @@ import 'package:exom/posts/postCreation.dart';
 import 'package:exom/posts/postWid.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'postFuncs.dart';
 import 'dart:async';
 
 
@@ -17,8 +18,6 @@ class _PostPageState extends State<PostPage> {
   ScrollController scr = new ScrollController();
   Timer updateTimer;
 
-  fetchPosts(callback, valuesetter){}
-
   scrListener()async{
     final pos = scr.position.pixels;
     final max = scr.position.maxScrollExtent;
@@ -30,13 +29,6 @@ class _PostPageState extends State<PostPage> {
       }, (val){});
     }
   }
-
-  checkNewPosts(callback){}
-
-  bool showNewPostsButton = false;
-
-  fetchNewPosts(callback){}
-
 
   updateListener(){
     print('updating the listener');
