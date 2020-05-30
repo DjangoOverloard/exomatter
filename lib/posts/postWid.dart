@@ -4,6 +4,7 @@ import 'package:exom/posts/postFuncs.dart';
 import 'package:exom/posts/postPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostWid extends StatefulWidget {
   final update;
@@ -105,6 +106,23 @@ class _PostWidState extends State<PostWid> {
                                               ),
                                       );
                                     })),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              'Links',
+              style: textTheme.caption,
+            ),
+            Column(
+              children: List.generate(widget.doc.data['links'].length, (index){
+                return InkWell(
+                  child: Text(widget.doc.data['links'][index], style: TextStyle(
+                    color: Colors.blue, fontSize: 16, 
+                  )),
+                  onTap: (){
+                    _launchURL(widget.doc.data['links'][index]);
+                  },
+                ); 
+              }),
             ),
             SizedBox(height: 8.0),
             Text(
@@ -285,6 +303,15 @@ class _PostWidState extends State<PostWid> {
       ),
     );
   
+  }
+}
+
+
+_launchURL(url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }
 
