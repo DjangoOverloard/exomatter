@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 
 class ExContainer extends StatelessWidget {
+  final double width;
+  final double height;
   final Widget child;
   final VoidCallback onTap;
   final EdgeInsets padding;
+  final Color indicatorColor;
 
   const ExContainer({
     Key key,
     this.child,
     this.padding,
     this.onTap,
+    this.width,
+    this.height,
+    this.indicatorColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(6.0);
+    final borderRadius = BorderRadius.circular(8.0);
     return Container(
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: borderRadius,
@@ -34,9 +42,17 @@ class ExContainer extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: borderRadius,
-            child: Padding(
-              padding: padding ?? const EdgeInsets.all(12.0),
-              child: child,
+            child: Row(
+              children: <Widget>[
+                if (indicatorColor != null)
+                  Container(width: 8.0, color: indicatorColor),
+                Expanded(
+                  child: Padding(
+                    padding: padding ?? const EdgeInsets.all(12.0),
+                    child: child,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

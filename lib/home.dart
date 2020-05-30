@@ -1,6 +1,6 @@
 import 'package:exom/posts/filterPage.dart';
 import 'package:exom/posts/postPage.dart';
-import 'package:exom/schedules/schedulePage.dart';
+import 'package:exom/schedules/schedule_page.dart';
 import 'package:exom/space/spaceFacts.dart';
 import 'package:exom/user/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,11 +17,39 @@ class _HomePageState extends State<HomePage> {
   var bottomBarPage = 0;
   GlobalKey<ScaffoldState> scaff = new GlobalKey<ScaffoldState>();
 
-
   @override
   void initState() {
     super.initState();
   }
+
+  Widget get _body {
+    return drawerPage == 0
+        ? (bottomBarPage == 0 ? PostPage() : SchedulePage())
+        : SpaceFacts();
+  }
+
+  String get _title {
+    return drawerPage == 0
+        ? (bottomBarPage == 0 ? 'Recent Posts' : 'Formed Schedules')
+        : 'Space Facts';
+  }
+
+  Widget get _bottomAppBar {
+    return drawerPage == 0
+        ? BottomNavigationBar(
+            currentIndex: bottomBarPage,
+            onTap: (val) {
+              bottomBarPage = val;
+              setState(() {});
+            },
+            items: List.generate(2, (index) {
+              return BottomNavigationBarItem(
+                  icon: Icon(index == 0 ? Icons.home : Icons.assignment),
+                  title: Text(index == 0 ? 'Posts' : 'Schedules'));
+            }))
+        : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,14 +63,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: false,
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         iconTheme: IconThemeData(
-          color: Colors.teal, 
+          color: Colors.teal,
         ),
         title: Text(
-          drawerPage == 0
-              ? (bottomBarPage == 0 ? 'Recent Posts' : 'Formed Schedules')
-              : 'Space Facts',
+          _title,
           style: TextStyle(
             color: Colors.black,
           ),
@@ -64,9 +91,7 @@ class _HomePageState extends State<HomePage> {
               : SizedBox.shrink(),
         ],
       ),
-      body: drawerPage == 0
-          ? (bottomBarPage == 0 ? PostPage() : SchedulePage())
-          : SpaceFacts(),
+      body: _body,
       bottomNavigationBar: drawerPage == 0
           ? BottomNavigationBar(
               currentIndex: bottomBarPage,
@@ -120,10 +145,17 @@ class DrawerWidget extends StatelessWidget {
                             children: [
                               Text(index == 0 ? 'Home Page' : 'Space Facts',
                                   style: TextStyle(
-                                    fontSize: 20,color: drawerPage == index?Colors.white:Colors.black
-                                  )),
-                              Icon(index == 0 ? Icons.home : Icons.book,
-                                  size: 25, color: drawerPage == index?Colors.white:Colors.black,),
+                                      fontSize: 20,
+                                      color: drawerPage == index
+                                          ? Colors.white
+                                          : Colors.black)),
+                              Icon(
+                                index == 0 ? Icons.home : Icons.book,
+                                size: 25,
+                                color: drawerPage == index
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
                             ],
                           ),
                         ),
@@ -139,4 +171,3 @@ class DrawerWidget extends StatelessWidget {
     );
   }
 }
-
