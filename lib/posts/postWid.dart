@@ -76,10 +76,8 @@ class _PostWidState extends State<PostWid> {
             height: 0.0,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16.0,
-            ),
-            child: Row(
+            padding: EdgeInsets.only(top: 10),
+                      child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(

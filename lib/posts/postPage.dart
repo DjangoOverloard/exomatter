@@ -29,7 +29,7 @@ class _PostPageState extends State<PostPage> {
   }
 
   updateListener() {
-    print('updating the listener');
+    print('updating the listener, ${DateTime.now()}');
     updateTimer = new Timer(Duration(minutes: 1), () async {
       await checkNewPosts(() {
         if (mounted) {

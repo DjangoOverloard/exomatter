@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../homeFuncs.dart';
+
 class UserBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class UserBox extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(top: 20),
-              child: Text('Zhangir Siranov', style: TextStyle(
+              child: Text('${userDoc.data['nickname']}', style: TextStyle(
                 fontSize: 22, 
               )),
             ),
