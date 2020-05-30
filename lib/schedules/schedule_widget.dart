@@ -32,7 +32,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
               child: ExContainer(
                 indicatorColor: _getIndexColor(index / widget.doc.data['activities'].length),
                 width: double.infinity,
-                height: 66.0,
+                height: 70,
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: <Widget>[

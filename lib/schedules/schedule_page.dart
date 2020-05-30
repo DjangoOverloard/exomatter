@@ -16,9 +16,10 @@ class _SchedulePageState extends State<SchedulePage> {
   var fetching = false;
   bool ready = false;
   ScrollController scr = new ScrollController();
+  var curPage = 0;
 
   getSchedules() async {
-    if (!fetching && moreAvailable) {
+    if (!fetching && moreAvailable && schedules.length == 0) {
       fetching = true;
       var query = Firestore.instance
           .collection('Schedules')
@@ -26,7 +27,7 @@ class _SchedulePageState extends State<SchedulePage> {
       await (schedules.length != 0
               ? query.startAfterDocument(schedules.last)
               : query)
-          .limit(5)
+          .limit(2)
           .getDocuments()
           .then((qs) {
         if (qs.documents.length != 0) {
@@ -39,6 +40,9 @@ class _SchedulePageState extends State<SchedulePage> {
         ready = true;
         setState(() {});
       }
+    }else{
+      ready = true;
+      setState((){});
     }
   }
 
@@ -80,7 +84,7 @@ class _SchedulePageState extends State<SchedulePage> {
           ),
           child: ExContainer(
             width: double.infinity,
-            height: 70.0,
+            height: 75.0,
             padding: const EdgeInsets.all(16.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,

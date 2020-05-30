@@ -1,4 +1,3 @@
-import 'package:exom/posts/filterPage.dart';
 import 'package:exom/posts/postPage.dart';
 import 'package:exom/schedules/schedule_page.dart';
 import 'package:exom/space/spaceFacts.dart';
@@ -74,22 +73,6 @@ class _HomePageState extends State<HomePage> {
             color: Colors.black,
           ),
         ),
-        actions: [
-          drawerPage == 0 && bottomBarPage == 0
-              ? IconButton(
-                  icon: Icon(
-                    Icons.filter_list,
-                    size: 25,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => FilterPage(),
-                    ));
-                  },
-                )
-              : SizedBox.shrink(),
-        ],
       ),
       body: _body,
       bottomNavigationBar: drawerPage == 0
