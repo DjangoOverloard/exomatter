@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:exom/widgets/container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:exom/homeFuncs.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 TextEditingController tagControl = new TextEditingController();
- usedLinks = [];
-
+ var usedLinks = [];
+ var images = [];
+var temp = '';
 class PostCreation extends StatefulWidget {
   final inHero;
 
@@ -16,8 +21,21 @@ class PostCreation extends StatefulWidget {
 
 class _PostCreationState extends State<PostCreation> {
   bool snackbaractive = false;
+ getPath() async {
+    temp = (await getTemporaryDirectory()).path;
+  }
+  @override
+  void initState(){
+    if(temp == ''){
+      getPath();
+    }
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
     return Hero(
       tag: 'postCreation',
       child: Material(
@@ -316,7 +334,97 @@ class _PostCreationState extends State<PostCreation> {
                             Padding(
                               padding: EdgeInsets.only(top: 10),
                               child: Wrap(
-                                children: <Widget>[],
+                                runSpacing: 10,
+                                children:List.generate(images.length!=3?images.length+1:3, (index){
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: (index+1).isOdd?10:0),
+                                                                      child: index!=images.length?Container(
+                                      width: (w - 42)/2,
+                                      height: 100, 
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Center(
+                                              child: Image(
+                                                  height: 100, 
+                                                  width: (w-26)/2,
+                                                  fit: BoxFit.cover,
+                                                  image: FileImage(images[index]),
+                                                ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(top: 5, right: 5),
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    File fileToRemove = images[index];
+                                                    images.remove(images[index]);
+                                                    setState((){});
+                                                    fileToRemove.deleteSync();
+                                                  },
+                                                                                                  child: Container(
+                                                    height: 20, 
+                                                    width: 20,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black38, 
+                                                      shape: BoxShape.circle, 
+                                                    ),
+                                                    child: Center(
+                                                      child: Icon(Icons.delete, color: Colors.red, size: 15),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ):GestureDetector(
+                                      onTap: (){
+                                       MultiImagePicker.pickImages(maxImages: 3 - images.length).then((files) {
+      var iterator = 0;
+      files.forEach((g) async {
+        final byteData = await g.getByteData();
+        var date = DateTime.now();
+        // var orderId = messages[messages.indexWhere((d)=>d.data['storeNumber'] == widget.storeNumber)].data['storeName'];
+        final file = File('$temp/pic#${iterator}Date$date.jpg');
+        await file.writeAsBytes(byteData.buffer
+            .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+        images.add(file);
+        setState(() {});
+        iterator = iterator + 1;
+      });
+    });
+                                      },
+                                                                          child: Container(
+                                        height: 100, 
+                                        width: (w - 42)/2,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5), 
+                                          color: Colors.white, 
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black26, 
+                                              blurRadius: 2, 
+                                              offset: Offset(0.0, 1.0), 
+                                            ),
+                                          ],
+                                        ),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Icon(Icons.image, color: Colors.teal,size: 20),
+                                              Icon(Icons.add, color: Colors.teal, size: 20)
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ); 
+                                })
                               ),
                             ),
                             Padding(

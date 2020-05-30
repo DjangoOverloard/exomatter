@@ -32,6 +32,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   multi_image_picker:
+  path_provider:
 
 dev_dependencies:
   flutter_test:
