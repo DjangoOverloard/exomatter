@@ -119,7 +119,7 @@ class _PostWidState extends State<PostWid> {
                     color: Colors.blue, fontSize: 16, 
                   )),
                   onTap: (){
-                    _launchURL(widget.doc.data['links'][index]);
+                    _launchURL(widget.doc.data['links'][index], context);
                   },
                 ); 
               }),
@@ -307,11 +307,21 @@ class _PostWidState extends State<PostWid> {
 }
 
 
-_launchURL(url) async {
+_launchURL(url, context) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    throw 'Could not launch $url';
+    Scaffold.of(context).showSnackBar(new SnackBar(
+      backgroundColor: Colors.teal,
+      content: Text('Could not launch url.'),
+      action: SnackBarAction(
+        label: 'Ok',
+        textColor: Colors.white,
+        onPressed: (){
+          Scaffold.of(context).hideCurrentSnackBar();
+        },
+      ),
+    ));
   }
 }
 
