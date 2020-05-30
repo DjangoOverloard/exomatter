@@ -55,7 +55,7 @@ class _PostWidState extends State<PostWid> {
             ),
             SizedBox(height: 8.0),
             Text(
-              'Tags',
+              'Tag',
               style: textTheme.caption,
             ),
             Chip(
