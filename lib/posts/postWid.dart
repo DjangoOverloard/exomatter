@@ -18,10 +18,10 @@ class _PostWidState extends State<PostWid> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
+    double w = MediaQuery.of(context).size.width;
     bool isVoting = voteLoading!=''?voteLoading.split(', ')[1] == widget.doc.documentID:false;
     bool isUpvote = isVoting?voteLoading.split(', ')[0] == '1':null;
-
+    var links = widget.doc.data['images'];
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -52,6 +52,59 @@ class _PostWidState extends State<PostWid> {
             Text(
               '${widget.doc.data['description']}',
               style: textTheme.subtitle1,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+                          child: Wrap(
+                                    runSpacing: 10,
+                                    children: List.generate(
+                                        links.length, (index) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            right: (index + 1).isOdd ? 10 : 0),
+                                        child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .push(CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        Scaffold(
+                                                      appBar: AppBar(
+                                                        title: Text('Image view'),
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.black,
+                                                      body: Center(
+                                                        child: Image(
+                                                          width: double.maxFinite,
+                                                          fit: BoxFit.cover,
+                                                          image: NetworkImage(
+                                                            links[index],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ));
+                                                },
+                                                child: Container(
+                                                  width: (w - 42) / 2,
+                                                  height: 100,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(5),
+                                                    child: Center(
+                                                      child: Image(
+                                                        height: 100,
+                                                        width: (w - 26) / 2,
+                                                        fit: BoxFit.cover,
+                                                        image: NetworkImage(
+                                                            links[index]),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      );
+                                    })),
             ),
             SizedBox(height: 8.0),
             Text(
