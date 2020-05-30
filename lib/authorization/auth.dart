@@ -59,7 +59,8 @@ class _AuthorizationState extends State<Authorization> {
       'email': email, 
       'registeredAt': DateTime.now(),
     });
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: '$email', password: '$password');
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: '$email',
+    password: '$password');
     await getUserDoc();
     Navigator.of(context).pop();
     Navigator.of(context).push(MaterialPageRoute(
@@ -67,7 +68,8 @@ class _AuthorizationState extends State<Authorization> {
       builder: (context)=> HomePage(),
     ));
     }else{
-    await FirebaseAuth.instance.signInWithEmailAndPassword(email: '$email', password: '$password')
+    await FirebaseAuth.instance.signInWithEmailAndPassword(email: '$email',
+    password: '$password')
     .then((value)async{
       await getUserDoc();
       Navigator.of(context).pop();
@@ -107,7 +109,8 @@ class _AuthorizationState extends State<Authorization> {
     if(password.length == 0){
       ret = false;
     }
-    if(!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email)){
+    if(!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+    .hasMatch(email)){
       ret = false;
     }
     return ret;
@@ -124,8 +127,8 @@ class _AuthorizationState extends State<Authorization> {
                 }
               }
             },
-                      child: Opacity(
-                        opacity: index !=3?1.0:(checkEverything()?1.0:0.3),
+           child: Opacity(
+            opacity: index !=3?1.0:(checkEverything()?1.0:0.3),
                                               child: Container(
         height: 45, 
         width: double.maxFinite,

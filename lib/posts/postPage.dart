@@ -77,7 +77,7 @@ class _PostPageState extends State<PostPage> {
           itemCount: posts.length+2,
           itemBuilder: (context, index) {
             return index != 0
-                ? index!=posts.length+1? PostWid(doc: posts[index],):
+                ? index!=posts.length+1? PostWid(doc: posts[index-1],):
                 Container(height: 200,width: double.maxFinite,
                  child: Center(
                    child: Text('There are no other posts', style: TextStyle(

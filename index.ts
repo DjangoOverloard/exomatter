@@ -45,7 +45,6 @@ export const makeScheduleHttpFunction = functions.https.onRequest(async(req, res
         'downvotes': [],
     };
     tags.forEach(async(tag)=>{
-
         const promise = admin.firestore().collection('Posts')
         .where('time', "<=", time).where('tags','array-contains',tag).orderBy('upvotes',"desc")
         .limit(1).get()

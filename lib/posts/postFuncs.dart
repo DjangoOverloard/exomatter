@@ -85,18 +85,24 @@ changeVote(isUpvote, doneCallback, doc)async{
 }
 
 bool fetching = false;
+bool fetchMore = true;
 fetchPosts(fetchedCallback, fetchedPosts)async{
   if(!fetching){
     fetching = true;
-    final query = posts.length!=0?Firestore.instance.collection('Posts').limit(5)
-    .orderBy('time', descending: true).startAfterDocument(posts.last)
-    :Firestore.instance.collection('Posts').limit(5).orderBy('time', descending: true);
-    await query.getDocuments().then((value) => (qs){
-      if(qs.documents.length!=0 && !fetchingNew){
+    final query = Firestore.instance.collection('Posts').limit(5)
+    .orderBy('time', descending: true);
+    var fetch = posts.length!=0?query.startAfterDocument(posts.last):query;
+    if(!fetchingNew && fetchMore){
+    await fetch.getDocuments().then((qs){
+      if(qs.documents.length!=0){
+        print('adding the posts right there');
       posts.addAll(qs.documents);
       }
+      fetchMore = qs.documents.length == 5;
       fetchedPosts(qs.documents);
+      fetchedCallback();
     });
+    }
     fetching = false;
   }
 }
