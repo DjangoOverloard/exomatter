@@ -68,7 +68,6 @@ class _PostPageState extends State<PostPage> {
       children: <Widget>[
         ListView.separated(
           controller: scr,
-          padding: const EdgeInsets.all(0.0),
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
           itemCount: posts.length + 2,

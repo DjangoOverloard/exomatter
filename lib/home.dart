@@ -63,8 +63,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: false,
         brightness: Brightness.light,
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
+        backgroundColor: bottomBarPage == 1? Theme.of(context).scaffoldBackgroundColor : Colors.white,
+        elevation: bottomBarPage == 1? 0.0 : 4.0,
         iconTheme: IconThemeData(
           color: Colors.teal,
         ),

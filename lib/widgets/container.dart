@@ -6,9 +6,10 @@ class ExContainer extends StatelessWidget {
   final Widget child;
   final VoidCallback onTap;
   final EdgeInsets padding;
+  final BorderRadius borderRadius;
   final Color indicatorColor;
 
-  const ExContainer({
+  ExContainer({
     Key key,
     this.child,
     this.padding,
@@ -16,17 +17,18 @@ class ExContainer extends StatelessWidget {
     this.width,
     this.height,
     this.indicatorColor,
+    this.borderRadius,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(8.0);
+    final _borderRadius = borderRadius ?? BorderRadius.circular(8.0);
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: borderRadius,
+        borderRadius: _borderRadius,
         boxShadow: [
           BoxShadow(
             offset: Offset(0.0, 8.0),
@@ -36,12 +38,12 @@ class ExContainer extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: borderRadius,
+        borderRadius: _borderRadius,
         child: Material(
           type: MaterialType.transparency,
           child: InkWell(
             onTap: onTap,
-            borderRadius: borderRadius,
+            borderRadius: _borderRadius,
             child: Row(
               children: <Widget>[
                 if (indicatorColor != null)
