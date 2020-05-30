@@ -8,9 +8,14 @@ import 'package:exom/homeFuncs.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-TextEditingController tagControl = new TextEditingController();
- var usedLinks = [];
+TextEditingController linkControl = new TextEditingController();
+TextEditingController titleControl = new TextEditingController();
+TextEditingController descriptionControl = new TextEditingController();
+  String selectedTag = '';
  var images = [];
+
+
+ var usedLinks = [];
 var temp = '';
 class PostCreation extends StatefulWidget {
   final inHero;
@@ -22,10 +27,16 @@ class PostCreation extends StatefulWidget {
 
 class _PostCreationState extends State<PostCreation> {
   bool snackbaractive = false;
-  String selectedTag = '';
  getPath() async {
     temp = (await getTemporaryDirectory()).path;
   }
+
+  onChangedSt(val){
+    if(val.trim().length == 0 || val.trim().length == 1){
+      setState((){});
+    }
+  }
+
   @override
   void initState(){
     if(temp == ''){
@@ -115,6 +126,9 @@ class _PostCreationState extends State<PostCreation> {
                         maxHeight: widget.inHero ? 90 : 45,
                       ),
                       child: TextField(
+                        onChanged: (val){
+                          onChangedSt(val);
+                        },
                         onTap: (){
                                      if (!widget.inHero) {
                             Navigator.of(context).push(CupertinoPageRoute(
@@ -125,6 +139,7 @@ class _PostCreationState extends State<PostCreation> {
                         readOnly: !widget.inHero,
                         maxLines: null,
                         maxLength: 60,
+                        controller: titleControl,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Want to write a post? Start from a title.',
@@ -153,6 +168,11 @@ class _PostCreationState extends State<PostCreation> {
                                   maxHeight: 235,
                                 ),
                                 child: TextField(
+                                  maxLines: null,
+                                   onChanged: (val){
+                          onChangedSt(val);
+                        },
+                                  controller: descriptionControl,
                                   maxLength: 500,
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
@@ -254,27 +274,27 @@ class _PostCreationState extends State<PostCreation> {
                                     setState((){});
                                   }
                                 },
-                                controller: tagControl,
+                                controller: linkControl,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'Enter a link (articles)',
+                                  hintText: 'Enter a link (articles or videos)',
                                 ),
                               ),
                             ),
-                            tagControl.text.trim().length!=0?Align(
+                            linkControl.text.trim().length!=0?Align(
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: (){
-                                  final val = tagControl.text.trim();
+                                  final val = linkControl.text.trim();
                                     if (usedLinks.indexWhere((d) =>
                                             d.toLowerCase() ==
                                             val.toLowerCase()) ==
                                         -1 && RegExp(linkregex).hasMatch(val)) {
                                       usedLinks.add(val);
                                       setState(() {});
-                                      tagControl.clear();
+                                      linkControl.clear();
                                     } else {
-                                      tagControl.clear();
+                                      linkControl.clear();
                                       if (!snackbaractive) {
                                         snackbaractive = true;
                                         Scaffold.of(context)
@@ -340,7 +360,26 @@ class _PostCreationState extends State<PostCreation> {
                                 children:List.generate(images.length!=3?images.length+1:3, (index){
                                   return Padding(
                                     padding: EdgeInsets.only(right: (index+1).isOdd?10:0),
-                                                                      child: index!=images.length?Container(
+                                                                      child: index!=images.length?GestureDetector(
+                                                                        onTap: (){
+                                                                          Navigator.of(context).push(CupertinoPageRoute(
+                                                                            builder: (context)=> Scaffold(
+                                                                              appBar: AppBar(
+                                                                                title: Text('Image view'),
+                                                                              ),
+                                                                              backgroundColor: Colors.black,
+                                                                              body: Center(
+                                                                                child: Image(
+                                                                                    width: double.maxFinite, 
+                                                                                    fit: BoxFit.cover,
+                                                                                  image: FileImage( images[index],
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ));
+                                                                        },
+                                                                                                                                              child: Container(
                                       width: (w - 42)/2,
                                       height: 100, 
                                       child: ClipRRect(
@@ -366,7 +405,7 @@ class _PostCreationState extends State<PostCreation> {
                                                     setState((){});
                                                     fileToRemove.deleteSync();
                                                   },
-                                                                                                  child: Container(
+                                                                                                    child: Container(
                                                     height: 20, 
                                                     width: 20,
                                                     decoration: BoxDecoration(
@@ -383,7 +422,8 @@ class _PostCreationState extends State<PostCreation> {
                                           ],
                                         ),
                                       ),
-                                    ):GestureDetector(
+                                    ),
+                                                                      ):GestureDetector(
                                       onTap: (){
                                        MultiImagePicker.pickImages(maxImages: 3 - images.length).then((files) {
       var iterator = 0;
@@ -430,7 +470,7 @@ class _PostCreationState extends State<PostCreation> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 10),
+                              padding: EdgeInsets.only(top: 10, bottom: 10),
                               child: Text(selectedTag != ''?'Tag':'Select a tag',
                                   style: TextStyle(
                                     color: Colors.black.withOpacity(0.6),
@@ -439,28 +479,45 @@ class _PostCreationState extends State<PostCreation> {
                                   )),
                             ),
                             AnimatedSwitcher(
+                              transitionBuilder: (child, animation){
+                                return RotationTransition(turns: animation, child: child); 
+                              },
                               duration: Duration(milliseconds: 300),
                                                           child: selectedTag == ''? Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: List.generate(tagDoc.data['tags'].length, (index){
-                                  return Container(
-                                    height: 30, 
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 10, right: 10),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Text(tagDoc.data['tags'][index], style: TextStyle(
-                                            color: Colors.white, fontSize: 16, height: 1.0, 
-                                          )),
-                                        ],
+                                  return GestureDetector(
+                                    onTap: (){
+                                      selectedTag = tagDoc.data['tags'][index];
+                                      setState((){});
+                                    },
+                                                                      child: Container(
+                                      height: 30, 
+                                      decoration: BoxDecoration(
+                                        color: Colors.teal, 
+                                        borderRadius: BorderRadius.circular(5), 
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 10, right: 10),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Text(tagDoc.data['tags'][index], style: TextStyle(
+                                              color: Colors.white, fontSize: 16, height: 1.0, 
+                                            )),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );
                                 }),
                               ):Container(
                                 height: 30, 
+                                decoration: BoxDecoration(
+                                  color: Colors.teal, 
+                                  borderRadius: BorderRadius.circular(5), 
+                                ),
                                 child: Padding(
                                   padding: EdgeInsets.only(left: 10, right: 10),
                                   child: Row(
@@ -471,17 +528,23 @@ class _PostCreationState extends State<PostCreation> {
                                       )),
                                       Padding(
                                         padding: EdgeInsets.only(left: 5),
-                                                                              child: Container(
-                                          height: 20, 
-                                          width: 20,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle, 
-                                            color: Colors.black38, 
-                                          ),
-                                          child: Center(
-                                            child: Icon(Icons.close, color: Colors.red, size: 20),
-                                          ),
+                                          child: GestureDetector(
+                                            onTap: (){
+                                              selectedTag = '';
+                                              setState((){});
+                                            },
+                                                                                      child: Container(
+                                            height: 20, 
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle, 
+                                              color: Colors.black38, 
+                                            ),
+                                            child: Center(
+                                              child: Icon(Icons.close, color: Colors.red, size: 20),
+                                            ),
                                         ),
+                                          ),
                                       ),
                                     ],
                                   ),
@@ -490,22 +553,29 @@ class _PostCreationState extends State<PostCreation> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(top: 20),
-                              child: Opacity(
-                                opacity: 0.3,
-                                child: Container(
-                                  height: 45,
-                                  width: double.maxFinite,
-                                  decoration: BoxDecoration(
-                                    color: Colors.teal,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Center(
-                                    child: Text('Send',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        )),
+                              child: GestureDetector(
+                                onTap: (){
+                                  if(checkEverything()){
+                                    
+                                  }
+                                },
+                                                              child: Opacity(
+                                  opacity: checkEverything()?1.0:0.3,
+                                  child: Container(
+                                    height: 45,
+                                    width: double.maxFinite,
+                                    decoration: BoxDecoration(
+                                      color: Colors.teal,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Center(
+                                      child: Text('Send',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -548,3 +618,18 @@ class _CreationHeroState extends State<CreationHero> {
 }
 
 final linkregex = r"(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:''.,<>?«»“”‘’]))+";
+
+
+checkEverything(){
+  var ret = true;
+  if(titleControl.text.trim().length==0){
+    ret = false;
+  }
+  if(descriptionControl.text.trim().length == 0){
+    ret = false;
+  }
+  if(selectedTag == ''){
+    ret = false;
+  }
+  return ret; 
+}
