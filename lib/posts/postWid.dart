@@ -61,7 +61,7 @@ class _PostWidState extends State<PostWid> {
             Chip(
                   backgroundColor: Colors.teal,
                   label: Text(
-                    widget.doc.data['tags'][0],
+                    widget.doc.data['tag'],
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -184,7 +184,9 @@ class _PostWidState extends State<PostWid> {
                                           builder: (context) => DeleteOrReport(
                                                 doc: widget.doc,
                                                 typeDelete: isYourPost,
-                                              ));
+                                              )).then((value){
+                                                widget.update();
+                                              });
                                     },
                                     child: Container(
                                       color: Colors.transparent,

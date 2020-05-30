@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exom/posts/postCreation.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../homeFuncs.dart';
@@ -8,11 +9,28 @@ import 'package:exom/posts/postPage.dart';
 createPost(context) async {
   showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-            content: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Colors.teal),
+      builder: (context) => WillPopScope(
+        onWillPop: (){},
+              child: AlertDialog(
+          title: Text("We're uploading your post..."),
+              content: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.teal),
+                ),
+              ),
             ),
-          ));
+      ));
+  var meta = [];
+  if (images.length != 0) {
+    for (int i = 0; i < images.length; i++) {
+      var stor = FirebaseStorage()
+          .ref()
+          .child('${userDoc.documentID}${DateTime.now().toString()}.jpg');
+      var uploadTask = stor.putFile(images[i]);
+      final url = await (await uploadTask.onComplete).ref.getDownloadURL();
+      meta.add(url);
+    }
+  }
   await Firestore.instance.collection('Posts').document().setData({
     'time': DateTime.now(),
     'title': titleControl.text.trim(),
@@ -22,8 +40,27 @@ createPost(context) async {
     'nickname': userDoc.data['nickname'],
     'upvotes': [],
     'downvotes': [],
-    'repetitionReports': 0,
+    'links': usedLinks,
+    'images': meta,
+    'repetitionReports': [],
   });
+  await Firestore.instance.collection('Posts').
+  where('userId', isEqualTo: userDoc.documentID).orderBy('time', descending: true)
+  .limit(1).getDocuments().then((qs){
+    if(qs.documents.length!=0){
+    posts.insert(0, qs.documents.first);
+    }
+  });
+  selectedTag = '';
+  titleControl.clear();
+  descriptionControl.clear();
+  var filesToRemove = []; filesToRemove.addAll(images);
+  images.clear();
+  filesToRemove.forEach((d){
+    d.deleteSync();
+  });
+  Navigator.of(context).pop();
+  Navigator.of(context).pop();
 }
 
 reportRepitition(doc, context) async {
@@ -65,7 +102,6 @@ deletePost(doc, context) async {
   Navigator.of(context).pop();
 }
 
-
 bool voting = false;
 var voteLoading = '';
 changeVote(isUpvote, doneCallback, doc) async {
@@ -99,14 +135,18 @@ changeVote(isUpvote, doneCallback, doc) async {
         payload['upvotes'] = FieldValue.arrayRemove([doc.documentID]);
       }
     }
-    voteLoading = '${isUpvote?1:0}, ${doc.documentID}';
+    voteLoading = '${isUpvote ? 1 : 0}, ${doc.documentID}';
     doneCallback();
     await Firestore.instance
         .collection('Posts')
         .document(doc.documentID)
         .updateData(payload);
-    await Firestore.instance.collection('Posts').document(doc.documentID).get().then((ds){
-      posts[posts.indexWhere((d)=>d.documentID == ds.documentID)] = ds;
+    await Firestore.instance
+        .collection('Posts')
+        .document(doc.documentID)
+        .get()
+        .then((ds) {
+      posts[posts.indexWhere((d) => d.documentID == ds.documentID)] = ds;
     });
     voting = false;
     voteLoading = '';
