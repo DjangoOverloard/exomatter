@@ -94,7 +94,9 @@ class _PostWidState extends State<PostWid> {
                   child: IconButton(
                     icon: Icon(Icons.more_vert),
                     onPressed: () {
-                      Scaffold.of(context).showBottomSheet((context) {
+                      showModalBottomSheet(
+                        context: context,
+                       builder: (context) {
                         bool isYourPost =
                             widget.doc.data['userId'] == userDoc.documentID;
                         return Container(
@@ -239,14 +241,16 @@ class _DeleteOrReportState extends State<DeleteOrReport> {
               ],
             )
           : !sent
-              ? AlertDialog(
-                  title: Text('Processing'),
-                  content: Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(Colors.teal),
+              ? Center(
+                child: AlertDialog(
+                    title: Text('Processing'),
+                    content: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.teal),
+                      ),
                     ),
                   ),
-                )
+              )
               : AlertDialog(
                   title: Text('Done!'),
                   actions: <Widget>[
