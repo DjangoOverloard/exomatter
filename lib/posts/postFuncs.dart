@@ -86,12 +86,12 @@ changeVote(isUpvote, doneCallback, doc)async{
 
 bool fetching = false;
 bool fetchMore = true;
-fetchPosts(fetchedCallback, fetchedPosts)async{
+fetchPosts(fetchedCallback, fetchedPosts, fromStart)async{
   if(!fetching){
     fetching = true;
     final query = Firestore.instance.collection('Posts').limit(5)
     .orderBy('time', descending: true);
-    var fetch = posts.length!=0?query.startAfterDocument(posts.last):query;
+    var fetch = posts.length!=0 && !fromStart?query.startAfterDocument(posts.last):query;
     if(!fetchingNew && fetchMore){
     await fetch.getDocuments().then((qs){
       if(qs.documents.length!=0){
@@ -115,7 +115,7 @@ fetchNewPosts(fetchedCallback)async{
       posts.clear();
     }
     posts.insertAll(0, val);
-  });
+  }, true);
     fetchedCallback();
   fetchingNew = false;
   }

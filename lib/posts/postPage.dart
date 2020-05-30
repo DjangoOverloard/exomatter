@@ -26,7 +26,7 @@ class _PostPageState extends State<PostPage> {
         if(mounted){
           setState((){});
         }
-      }, (val){});
+      }, (val){}, false);
     }
   }
 
@@ -50,7 +50,7 @@ class _PostPageState extends State<PostPage> {
       if(mounted){
         setState((){});
       }
-    }, (val){});
+    }, (val){}, true);
     }else{
       checkNewPosts((){
         if(mounted){
