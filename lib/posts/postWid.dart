@@ -63,13 +63,19 @@ class _PostWidState extends State<PostWid> {
                     widget.doc.data['tags'][index],
                     style: TextStyle(color: Colors.white),
                   ),
-                  backgroundColor: Theme.of(context).primaryColor,
                 ),
-              ),
             ),
-            SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          Divider(
+            height: 0.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16.0,
+              horizontal: 8.0,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                   width: 36.0,
@@ -79,6 +85,18 @@ class _PostWidState extends State<PostWid> {
                     onPressed: () {},
                   ),
                 ),
+                SizedBox(width: 4.0),
+                Text(
+                  '+123',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0,
+                    height: 2.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(width: 4.0),
                 SizedBox(
                   width: 36.0,
                   height: 36.0,
@@ -96,76 +114,81 @@ class _PostWidState extends State<PostWid> {
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
-                       builder: (context) {
-                        bool isYourPost =
-                            widget.doc.data['userId'] == userDoc.documentID;
-                        return Container(
-                          height: 100,
-                          width: double.maxFinite,
-                          color: Colors.white,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: Column(children: [
-                              SizedBox(
-                                height: 50,
-                                width: double.maxFinite,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text('Choose the action',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                      )),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => DeleteOrReport(
-                                            doc: widget.doc,
-                                            typeDelete: isYourPost,
-                                          ));
-                                },
-                                child: SizedBox(
-                                  height: 50,
-                                  width: double.maxFinite,
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                          isYourPost
-                                              ? 'Delete'
-                                              : 'Report repitition',
+                        builder: (_) {
+                          bool isYourPost =
+                              widget.doc.data['userId'] == userDoc.documentID;
+                          return Container(
+                            height: 100,
+                            width: double.maxFinite,
+                            color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                    width: double.maxFinite,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text('Choose the action',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 18,
                                           )),
-                                      Spacer(),
-                                      Icon(
-                                          isYourPost
-                                              ? Icons.delete
-                                              : Icons.warning,
-                                          color: isYourPost
-                                              ? Colors.red
-                                              : Colors.orange,
-                                          size: 25),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => DeleteOrReport(
+                                                doc: widget.doc,
+                                                typeDelete: isYourPost,
+                                              ));
+                                    },
+                                    child: SizedBox(
+                                      height: 50,
+                                      width: double.maxFinite,
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(
+                                              isYourPost
+                                                  ? 'Delete'
+                                                  : 'Report repitition',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                              )),
+                                          Spacer(),
+                                          Icon(
+                                              isYourPost
+                                                  ? Icons.delete
+                                                  : Icons.warning,
+                                              color: isYourPost
+                                                  ? Colors.red
+                                                  : Colors.orange,
+                                              size: 25),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ]),
-                          ),
-                        );
-                      });
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
       ),
     );
+  
   }
 }
 
@@ -210,7 +233,7 @@ class _DeleteOrReportState extends State<DeleteOrReport> {
               title: Text(
                 widget.typeDelete
                     ? 'Are you sure you want to delete this post?'
-                    : 'Are you sure you want to report the repetition?',
+                    : 'Are you sure you want to report the repitition?',
               ),
               actions: <Widget>[
                 FlatButton(
@@ -241,16 +264,14 @@ class _DeleteOrReportState extends State<DeleteOrReport> {
               ],
             )
           : !sent
-              ? Center(
-                child: AlertDialog(
-                    title: Text('Processing'),
-                    content: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.teal),
-                      ),
+              ? AlertDialog(
+                  title: Text('Processing'),
+                  content: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.teal),
                     ),
                   ),
-              )
+                )
               : AlertDialog(
                   title: Text('Done!'),
                   actions: <Widget>[
