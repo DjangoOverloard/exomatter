@@ -1,5 +1,7 @@
 import 'package:exom/posts/filterPage.dart';
 import 'package:exom/posts/postPage.dart';
+import 'package:exom/schedules/schedulePage.dart';
+import 'package:exom/space/spaceFacts.dart';
 import 'package:exom/user/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -138,20 +140,3 @@ class DrawerWidget extends StatelessWidget {
   }
 }
 
-class SchedulePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
-
-class SpaceFacts extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
