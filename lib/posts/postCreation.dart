@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:exom/homeFuncs.dart';
 
 TextEditingController tagControl = new TextEditingController();
-List<String> usedTags = [];
+ usedLinks = [];
 
 class PostCreation extends StatefulWidget {
   final inHero;
@@ -24,278 +24,328 @@ class _PostCreationState extends State<PostCreation> {
         color: Colors.white,
         borderRadius:
             widget.inHero ? BorderRadius.circular(0) : BorderRadius.circular(4),
-        child: ExContainer(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 36,
-                      width: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.teal,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 16.0,
+        child: GestureDetector(
+          onTap: (){
+                                      if (!widget.inHero) {
+                            Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) => CreationHero(),
+                            ));
+                          }
+          },
+                  child: ExContainer(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 36,
+                        width: 36,
+                        decoration: BoxDecoration(
+                          color: Colors.teal,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 16.0,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 10),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Text(
+                              userDoc.data['nickname'].toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  .copyWith(color: Colors.teal),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  widget.inHero
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 20),
                           child: Text(
-                            userDoc.data['nickname'].toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2
-                                .copyWith(color: Colors.teal),
+                            'Post Title',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.6),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
+                        )
+                      : SizedBox.shrink(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minHeight: 45,
+                        maxHeight: widget.inHero ? 90 : 45,
                       ),
-                    ),
-                  ],
-                ),
-                widget.inHero
-                    ? Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Text(
-                          'Post Title',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: TextField(
+                        onTap: (){
+                                     if (!widget.inHero) {
+                            Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) => CreationHero(),
+                            ));
+                          }
+                        },
+                        readOnly: !widget.inHero,
+                        maxLines: null,
+                        maxLength: 60,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Want to write a post? Start from a title.',
                         ),
-                      )
-                    : SizedBox.shrink(),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Container(
-                    constraints: BoxConstraints(
-                      minHeight: 45,
-                      maxHeight: widget.inHero ? 90 : 45,
-                    ),
-                    child: TextField(
-                      onTap: () {
-                        if (!widget.inHero) {
-                          Navigator.of(context).push(CupertinoPageRoute(
-                            builder: (context) => CreationHero(),
-                          ));
-                        }
-                      },
-                      readOnly: !widget.inHero,
-                      maxLines: null,
-                      maxLength: 200,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Want to write a post? Start from a title.',
                       ),
                     ),
                   ),
-                ),
-                widget.inHero
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Text('Short Description',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.6),
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                minHeight: 45,
-                                maxHeight: 235,
-                              ),
-                              child: TextField(
-                                maxLength: 500,
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText:
-                                        'Enter a short description for your activity'),
+                  widget.inHero
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text('Short Description',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.6),
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  minHeight: 45,
+                                  maxHeight: 235,
+                                ),
+                                child: TextField(
+                                  maxLength: 500,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText:
+                                          'Enter a short description for your activity'),
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Text('Tags',
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.6),
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ),
-                          AnimatedSwitcher(
-                            duration: Duration(milliseconds: 200),
-                            child: usedTags.length != 0
-                                ? Padding(
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: Wrap(
-                                        runSpacing: 10,
-                                        spacing: 10,
-                                        children: List.generate(usedTags.length,
-                                            (index) {
-                                          return Container(
-                                            height: 25,
-                                            decoration: BoxDecoration(
-                                              color: index == 0
-                                                  ? Colors.blue
-                                                  : index == 1
-                                                      ? Colors.red
-                                                      : Colors.green,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 10, right: 10),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Text(usedTags[index],
-                                                          style: TextStyle(
-                                                            fontSize: 18,
-                                                            height: 1.0,
-                                                          )),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 5),
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            usedTags.remove(
-                                                                usedTags[
-                                                                    index]);
-                                                            setState(() {});
-                                                          },
-                                                          child: Container(
-                                                            height: 20,
-                                                            width: 20,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .black38,
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                            ),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                  Icons.close,
-                                                                  color: Colors
-                                                                      .red,
-                                                                  size: 15),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text('Links',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.6),
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            AnimatedSwitcher(
+                              duration: Duration(milliseconds: 200),
+                              child: usedLinks.length != 0
+                                  ? Padding(
+                                      padding: EdgeInsets.only(top: 10),
+                                      child: Wrap(
+                                          runSpacing: 10,
+                                          spacing: 10,
+                                          children: List.generate(usedLinks.length,
+                                              (index) {
+                                            return Container(
+                                              height: 25,
+                                              decoration: BoxDecoration(
+                                                color: Colors.teal,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 10, right: 10),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(usedLinks[index].length>60?usedLinks[index].substring(0, 60)+'...'
+                                                        :usedLinks[index],
+                                                            style: TextStyle(
+                                                              fontSize: 14,
+                                                              height: 1.0,
+                                                              color: Colors.white,
+                                                            ), ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 5),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              usedLinks.remove(
+                                                                  usedLinks[
+                                                                      index]);
+                                                              setState(() {});
+                                                            },
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: 20,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .black38,
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              child: Center(
+                                                                child: Icon(
+                                                                    Icons.close,
+                                                                    color: Colors
+                                                                        .red,
+                                                                    size: 15),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        })),
-                                  )
-                                : SizedBox.shrink(),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: TextField(
-                              controller: tagControl,
-                              onChanged: (val) {
-                                if (val.split(',').length == 2) {
-                                  if (usedTags.indexWhere((d) =>
-                                          d.toLowerCase() ==
-                                          val.split(',')[0].toLowerCase()) ==
-                                      -1) {
-                                    usedTags.add(val.split(',')[0]);
-                                    setState(() {});
-                                    tagControl.clear();
-                                  } else {
-                                    tagControl.clear();
-                                    if (!snackbaractive) {
-                                      snackbaractive = true;
-                                      Scaffold.of(context)
-                                          .showSnackBar(SnackBar(
-                                            backgroundColor:
-                                                Colors.blueGrey[900],
-                                            content: Text(
-                                                'You either repeated the tag or entered the tag that doesnt exist.',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                )),
-                                            action: SnackBarAction(
-                                              label: 'OK',
-                                              textColor: Colors.teal,
-                                              onPressed: () {
-                                                Scaffold.of(context)
-                                                    .hideCurrentSnackBar();
-                                              },
-                                            ),
-                                          ))
-                                          .closed
-                                          .then((done) {
-                                        snackbaractive = false;
-                                      });
-                                    }
+                                            );
+                                          })),
+                                    )
+                                  : SizedBox.shrink(),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                onChanged: (val){
+                                  if(val.trim().length == 0||val.trim().length == 1){
+                                    setState((){});
                                   }
-                                }
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Enter a comma separated tags',
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Opacity(
-                              opacity: 0.3,
-                              child: Container(
-                                height: 45,
-                                width: double.maxFinite,
-                                decoration: BoxDecoration(
-                                  color: Colors.teal,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Center(
-                                  child: Text('Send',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      )),
+                                },
+                                controller: tagControl,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter a link (articles)',
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink(),
-              ],
+                            tagControl.text.trim().length!=0?Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: (){
+                                  final val = tagControl.text.trim();
+                                    if (usedLinks.indexWhere((d) =>
+                                            d.toLowerCase() ==
+                                            val.toLowerCase()) ==
+                                        -1 && RegExp(linkregex).hasMatch(val)) {
+                                      usedLinks.add(val);
+                                      setState(() {});
+                                      tagControl.clear();
+                                    } else {
+                                      tagControl.clear();
+                                      if (!snackbaractive) {
+                                        snackbaractive = true;
+                                        Scaffold.of(context)
+                                            .showSnackBar(SnackBar(
+                                              backgroundColor:
+                                                  Colors.blueGrey[900],
+                                              content: Text(
+                                                  'You either repeated the link or entered invalid url',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                  )),
+                                              action: SnackBarAction(
+                                                label: 'OK',
+                                                textColor: Colors.teal,
+                                                onPressed: () {
+                                                  Scaffold.of(context)
+                                                      .hideCurrentSnackBar();
+                                                },
+                                              ),
+                                            ))
+                                            .closed
+                                            .then((done) {
+                                          snackbaractive = false;
+                                        });
+                                      }
+                                    }
+                                },
+                                                            child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.teal, 
+                                    borderRadius: BorderRadius.circular(5), 
+                                  ),
+                                  height: 40, 
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 10, right: 10),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text('Enter', style: TextStyle(
+                                          color: Colors.white, 
+                                          fontSize: 16, 
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ):SizedBox.shrink(),
+                                                   Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text('Photos',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.6),
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Wrap(
+                                children: <Widget>[],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Opacity(
+                                opacity: 0.3,
+                                child: Container(
+                                  height: 45,
+                                  width: double.maxFinite,
+                                  decoration: BoxDecoration(
+                                    color: Colors.teal,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Center(
+                                    child: Text('Send',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox.shrink(),
+                ],
+              ),
             ),
           ),
         ),
@@ -327,3 +377,5 @@ class _CreationHeroState extends State<CreationHero> {
     );
   }
 }
+
+final linkregex = r"(?:(?:https?|ftp):\/\/|\b(?:[a-z\d]+\.))(?:(?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:''.,<>?«»“”‘’]))+";

@@ -14,7 +14,7 @@ class UserBox extends StatelessWidget {
               height: 100, width: 100, 
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blueGrey[800], 
+                color: Colors.teal, 
               ),
               child: Center(
                 child: Icon(Icons.person, color: Colors.white,),
@@ -23,7 +23,7 @@ class UserBox extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 20),
               child: Text('${userDoc.data['nickname']}', style: TextStyle(
-                fontSize: 22, 
+                fontSize: 22, color: Colors.teal,
               )),
             ),
           ],
