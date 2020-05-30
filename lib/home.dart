@@ -1,3 +1,4 @@
+import 'package:exom/posts/filterPage.dart';
 import 'package:exom/posts/postPage.dart';
 import 'package:exom/user/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -147,14 +148,6 @@ class SchedulePage extends StatelessWidget {
 }
 
 class SpaceFacts extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
-class FilterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

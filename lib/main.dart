@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'authorization/auth.dart';
 import 'home.dart';
 import 'homeFuncs.dart';
 
@@ -81,17 +82,3 @@ class _AuthCheckState extends State<AuthCheck> {
 
 
 
-
-class Authorization extends StatefulWidget {
-  @override
-  _AuthorizationState createState() => _AuthorizationState();
-}
-
-class _AuthorizationState extends State<Authorization> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
