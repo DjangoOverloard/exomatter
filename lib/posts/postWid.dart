@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exom/homeFuncs.dart';
+import 'package:exom/posts/postFuncs.dart';
 import 'package:exom/posts/postPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PostWid extends StatefulWidget {
+  final update;
   final doc;
 
-  const PostWid({Key key, this.doc}) : super(key: key);
+  const PostWid({Key key, this.doc, this.update}) : super(key: key);
   @override
   _PostWidState createState() => _PostWidState();
 }
@@ -16,6 +18,9 @@ class _PostWidState extends State<PostWid> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
+    bool isVoting = voteLoading!=''?voteLoading.split(', ')[1] == widget.doc.documentID:false;
+    bool isUpvote = isVoting?voteLoading.split(', ')[0] == '1':null;
 
     return Container(
       decoration: BoxDecoration(
@@ -59,6 +64,7 @@ class _PostWidState extends State<PostWid> {
               children: List.generate(
                 widget.doc.data['tags'].length,
                 (index) => Chip(
+                  backgroundColor: Colors.teal,
                   label: Text(
                     widget.doc.data['tags'][index],
                     style: TextStyle(color: Colors.white),
@@ -72,7 +78,6 @@ class _PostWidState extends State<PostWid> {
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 16.0,
-              horizontal: 8.0,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,12 +87,18 @@ class _PostWidState extends State<PostWid> {
                   height: 36.0,
                   child: IconButton(
                     icon: Icon(Icons.arrow_upward),
-                    onPressed: () {},
+                    onPressed: () {
+                      changeVote(true, (){
+                        if(mounted){
+                        widget.update();
+                        }
+                      }, widget.doc);
+                    },
                   ),
                 ),
                 SizedBox(width: 4.0),
                 Text(
-                  '+123',
+                  '${widget.doc.data['upvotes'].length}',
                   style: TextStyle(
                     color: Colors.teal,
                     fontWeight: FontWeight.w500,
@@ -96,15 +107,53 @@ class _PostWidState extends State<PostWid> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+               (isUpvote!=null?isUpvote:false)?Padding(
+                  padding: EdgeInsets.only(left: 5),
+                                  child: Container(
+                    height: 15, 
+                    width: 15,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: 
+                      AlwaysStoppedAnimation(Colors.teal)),
+                    )),
+                ):SizedBox.shrink(),
                 SizedBox(width: 4.0),
                 SizedBox(
                   width: 36.0,
                   height: 36.0,
                   child: IconButton(
                     icon: Icon(Icons.arrow_downward),
-                    onPressed: () {},
+                    onPressed: () {
+                      changeVote(false, (){
+                        widget.update();
+                      }, widget.doc);
+                    },
                   ),
                 ),
+                Text(
+                  '${widget.doc.data['downvotes'].length}',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0,
+                    height: 2.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                (isUpvote!=null?!isUpvote:false)?Padding(
+                  padding: EdgeInsets.only(left: 5),
+                                  child: Container(
+                    height: 15, 
+                    width: 15,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: 
+                      AlwaysStoppedAnimation(Colors.teal)),
+                    )),
+                ):SizedBox.shrink(),
                 Spacer(),
                 SizedBox(
                   width: 36.0,
@@ -146,7 +195,8 @@ class _PostWidState extends State<PostWid> {
                                                 typeDelete: isYourPost,
                                               ));
                                     },
-                                    child: SizedBox(
+                                    child: Container(
+                                      color: Colors.transparent,
                                       height: 50,
                                       width: double.maxFinite,
                                       child: Row(
@@ -289,6 +339,7 @@ class _DeleteOrReportState extends State<DeleteOrReport> {
                         if (widget.typeDelete) {
                           posts.remove(widget.doc);
                         }
+                        Navigator.of(context).pop();
                       },
                     ),
                   ],

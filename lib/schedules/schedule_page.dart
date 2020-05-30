@@ -62,71 +62,12 @@ class _SchedulePageState extends State<SchedulePage> {
       );
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(16.0),
-              child: ScheduleWidget(
-                doc: schedules[0],
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            bottom: 16.0,
-          ),
-          child: ExContainer(
-            width: double.infinity,
-            height: 75.0,
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IndicatorWidget(
-                  isActive: true,
-                ),
-                SizedBox(width: 16.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Today',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      Text(
-                        '6 activities',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_upward,
-                  ),
-                  color: Colors.black54,
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_downward,
-                  ),
-                  color: Colors.black54,
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
+      child: ScheduleWidget(
+        doc: schedules[curPage],
+      ),
     );
   }
 }

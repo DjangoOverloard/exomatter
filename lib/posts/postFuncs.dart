@@ -65,10 +65,11 @@ deletePost(doc, context) async {
 }
 
 bool voting = false;
+var voteLoading = '';
 changeVote(isUpvote, doneCallback, doc) async {
   if (!voting) {
     voting = true;
-    var payload = {};
+    var payload;
     if (isUpvote) {
       bool isAddition =
           doc.data['upvotes'].indexWhere((g) => g == doc.documentID) == -1;
@@ -96,11 +97,17 @@ changeVote(isUpvote, doneCallback, doc) async {
         payload['upvotes'] = FieldValue.arrayRemove([doc.documentID]);
       }
     }
+    voteLoading = '${isUpvote?1:0}, ${doc.documentID}';
+    doneCallback();
     await Firestore.instance
         .collection('Posts')
         .document(doc.documentID)
         .updateData(payload);
+    await Firestore.instance.collection('Posts').document(doc.documentID).get().then((ds){
+      posts[posts.indexWhere((d)=>d.documentID == ds.documentID)] = ds;
+    });
     voting = false;
+    voteLoading = '';
     doneCallback();
   }
 }

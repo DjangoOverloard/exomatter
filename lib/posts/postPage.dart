@@ -75,6 +75,11 @@ class _PostPageState extends State<PostPage> {
             return index != 0
                 ? index != posts.length + 1
                     ? PostWid(
+                      update: (){
+                        if(mounted){
+                          setState((){});
+                        }
+                      },
                         doc: posts[index - 1],
                       )
                     : Container(
