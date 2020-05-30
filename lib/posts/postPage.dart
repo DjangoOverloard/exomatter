@@ -106,6 +106,11 @@ class _PostPageState extends State<PostPage> {
                         ),
                       )
                 : PostCreation(
+                  done: (){
+                    if(mounted){
+                      setState((){});
+                    }
+                  },
                     inHero: false,
                   );
           },

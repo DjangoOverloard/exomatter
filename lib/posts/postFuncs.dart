@@ -56,6 +56,7 @@ createPost(context) async {
   descriptionControl.clear();
   var filesToRemove = []; filesToRemove.addAll(images);
   images.clear();
+  usedLinks.clear();
   filesToRemove.forEach((d){
     d.deleteSync();
   });

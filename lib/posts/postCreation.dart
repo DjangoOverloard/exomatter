@@ -19,9 +19,10 @@ TextEditingController descriptionControl = new TextEditingController();
  var usedLinks = [];
 var temp = '';
 class PostCreation extends StatefulWidget {
+  final VoidCallback done;
   final inHero;
 
-  const PostCreation({Key key, this.inHero}) : super(key: key);
+  const PostCreation({Key key, this.inHero, this.done}) : super(key: key);
   @override
   _PostCreationState createState() => _PostCreationState();
 }
@@ -61,7 +62,9 @@ class _PostCreationState extends State<PostCreation> {
                                       if (!widget.inHero) {
                             Navigator.of(context).push(CupertinoPageRoute(
                               builder: (context) => CreationHero(),
-                            ));
+                            )).then((value){
+                              widget.done();
+                            });
                           }
           },
                   child: ExContainer(
@@ -134,7 +137,9 @@ class _PostCreationState extends State<PostCreation> {
                                      if (!widget.inHero) {
                             Navigator.of(context).push(CupertinoPageRoute(
                               builder: (context) => CreationHero(),
-                            ));
+                            )).then((value){
+                              widget.done();
+                            });
                           }
                         },
                         readOnly: !widget.inHero,
