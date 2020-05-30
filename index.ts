@@ -45,21 +45,26 @@ export const makeScheduleHttpFunction = functions.https.onRequest(async(req, res
         'downvotes': [],
     };
     tags.forEach(async(tag)=>{
+
         const promise = admin.firestore().collection('Posts')
         .where('time', "<=", time).where('tags','array-contains',tag).orderBy('upvotes',"desc")
-        .limit(1).get().then((ds)=>{
-            if(ds.docs.length!=0){
-                schedulePayload['links'].add(ds.docs[0].id);
+        .limit(1).get()
+        .then((docs)=>{
+            if(docs.docs.findIndex(doc => !doc.exists) !== -1){
+                return null;
+            }else{
+                const ds = docs.docs[0];
+                schedulePayload['links'].add(ds.id);
                 schedulePayload['tags'].add(tag);
-                const data = ds.docs[0].data();
+                const data = ds.data();
                 schedulePayload['credits'].add(data.nickname);
                 schedulePayload['activities'].add(data.title);
                 return ds;
             }
-        });
+        }).catch();
         promises.push(promise);
     });
-    const docs = await Promise.all(promises);
+    await Promise.all(promises);
     res.send(schedulePayload);
     // if(docs.length!=0){
     //     await admin.firestore().collection('Schedules').doc().set(schedulePayload);
