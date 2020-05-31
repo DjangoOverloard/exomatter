@@ -41,9 +41,15 @@ class _PostWidState extends State<PostWid> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            widget.doc.data['spaceOrganization'] == null?Text(
               '${widget.doc.data['nickname']}',
               style: textTheme.caption,
+            ):Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('By'),
+                
+              ],
             ),
             SizedBox(height: 4.0),
             Text(

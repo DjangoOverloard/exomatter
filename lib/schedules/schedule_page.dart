@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exom/schedules/schedule_widget.dart';
-import 'package:exom/widgets/container.dart';
-import 'package:exom/widgets/indicator.dart';
 import 'package:flutter/material.dart';
 
 List<DocumentSnapshot> schedules = [];
