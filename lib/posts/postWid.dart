@@ -48,7 +48,13 @@ class _PostWidState extends State<PostWid> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text('By'),
-                
+                SizedBox(
+                  height: 30, 
+                  child: Image(
+                    fit: BoxFit.fitHeight,
+                    image: AssetImage('assets/${widget.doc.data['spaceOrganization']}.png'),
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 4.0),
