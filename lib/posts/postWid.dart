@@ -47,12 +47,15 @@ class _PostWidState extends State<PostWid> {
             ):Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text('By'),
-                SizedBox(
-                  height: 30, 
-                  child: Image(
-                    fit: BoxFit.fitHeight,
-                    image: AssetImage('assets/${widget.doc.data['spaceOrganization']}.png'),
+                Text('By:'),
+                Padding(
+                  padding: EdgeInsets.only(left: 5),
+                                  child: SizedBox(
+                    height: 10, 
+                    child: Image(
+                      fit: BoxFit.fitHeight,
+                      image: AssetImage('assets/${widget.doc.data['spaceOrganization']}.png'),
+                    ),
                   ),
                 ),
               ],
@@ -230,7 +233,7 @@ class _PostWidState extends State<PostWid> {
                     )),
                 ):SizedBox.shrink(),
                 Spacer(),
-                widget.actionUnavailable == null?SizedBox(
+                widget.actionUnavailable == null && widget.doc.data['cantMakeActions'] == null?SizedBox(
                   width: 36.0,
                   height: 36.0,
                   child: IconButton(
