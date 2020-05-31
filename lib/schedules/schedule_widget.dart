@@ -183,6 +183,13 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                         ],
                       ),
                     ),
+                    widget.doc.data['spaceOrganizations'][index]!=''?SizedBox(
+                      width: 36,
+                      child: Image(
+                        fit: BoxFit.fitWidth,
+                        image: AssetImage('assets/${widget.doc.data['spaceOrganizations'][index]}.png'),
+                      ),
+                    ):SizedBox.shrink(),
                     SizedBox(
                       width: 36.0,
                       height: 36.0,
