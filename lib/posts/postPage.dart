@@ -41,9 +41,14 @@ class _PostPageState extends State<PostPage> {
       updateListener();
     });
   }
-  getTag()async{
-    if(tagDoc == null){
-      await Firestore.instance.collection('Tags').document('tags').get().then((ds){
+
+  getTag() async {
+    if (tagDoc == null) {
+      await Firestore.instance
+          .collection('Tags')
+          .document('tags')
+          .get()
+          .then((ds) {
         tagDoc = ds;
       });
     }
@@ -52,10 +57,10 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     if (posts.length == 0) {
-      fetchPosts(() async{
+      fetchPosts(() async {
         if (mounted) {
-    await getTag();
-  ready = true;
+          await getTag();
+          ready = true;
           setState(() {});
         }
       }, (val) {}, true);
@@ -78,52 +83,54 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        ready?ListView.separated(
-          controller: scr,
-          shrinkWrap: true,
-          physics: BouncingScrollPhysics(),
-          itemCount: posts.length + 2,
-          itemBuilder: (context, index) {
-            return index != 0
-                ? index != posts.length + 1
-                    ? PostWid(
-                      update: (){
-                        if(mounted){
-                          setState((){});
-                        }
-                      },
-                        doc: posts[index - 1],
-                      )
-                    : Container(
-                        height: 200,
-                        width: double.maxFinite,
-                        child: Center(
-                          child: Text('There are no other posts',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                              )),
-                        ),
-                      )
-                : PostCreation(
-                  done: (){
-                    if(mounted){
-                      setState((){});
-                    }
-                  },
-                    inHero: false,
-                  );
-          },
-          separatorBuilder: (context, i) => SizedBox(
-            height: 8.0,
-          ),
-        ):Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(
-              Colors.teal, 
-            ),
-          ),
-        ),
+        ready
+            ? ListView.separated(
+                controller: scr,
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                itemCount: posts.length + 2,
+                itemBuilder: (context, index) {
+                  return index != 0
+                      ? index != posts.length + 1
+                          ? PostWid(
+                              update: () {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              },
+                              doc: posts[index - 1],
+                            )
+                          : Container(
+                              height: 200,
+                              width: double.maxFinite,
+                              child: Center(
+                                child: Text('There are no other posts',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                    )),
+                              ),
+                            )
+                      : PostCreation(
+                          done: () {
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          inHero: false,
+                        );
+                },
+                separatorBuilder: (context, i) => SizedBox(
+                  height: 8.0,
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(
+                    Colors.teal,
+                  ),
+                ),
+              ),
         AnimatedPositioned(
           top: showNewPostsButton ? 10 : -40,
           left: 0,
