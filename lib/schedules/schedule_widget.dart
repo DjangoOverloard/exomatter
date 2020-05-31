@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:exom/posts/postPage.dart';
+import 'package:exom/posts/postWid.dart';
+import 'package:exom/schedules/scheduleFuncs.dart';
 import 'package:exom/widgets/container.dart';
 import 'package:exom/widgets/indicator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleWidget extends StatefulWidget {
@@ -16,6 +20,8 @@ Color _getIndexColor(double p) => Color.lerp(Colors.green, Colors.blue, p);
 class _ScheduleWidgetState extends State<ScheduleWidget> {
   @override
   Widget build(BuildContext context) {
+      bool isVoting = voteScheduleLoading!=''?voteScheduleLoading.split(', ')[1] == widget.doc.documentID:false;
+    bool isUpvote = isVoting?voteScheduleLoading.split(', ')[0] == '1':null;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -52,15 +58,47 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       Icons.arrow_upward,
                     ),
                     color: Colors.black54,
-                    onPressed: () {},
+                    onPressed: () {
+                      changeVote(true, (){
+                        setState((){});
+                      }, widget.doc);
+                    },
                   ),
+                  (isUpvote!=null?isUpvote:false)?Padding(
+                  padding: EdgeInsets.only(left: 5),
+                                  child: Container(
+                    height: 15, 
+                    width: 15,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: 
+                      AlwaysStoppedAnimation(Colors.teal)),
+                    )),
+                ):SizedBox.shrink(),
                   IconButton(
                     icon: Icon(
                       Icons.arrow_downward,
                     ),
                     color: Colors.black54,
-                    onPressed: () {},
+                    onPressed: () {
+                      changeVote(false, (){
+                        setState((){});
+                      }, widget.doc);
+                    },
                   ),
+                  (isUpvote!=null?!isUpvote:false)?Padding(
+                  padding: EdgeInsets.only(left: 5),
+                                  child: Container(
+                    height: 15, 
+                    width: 15,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        valueColor: 
+                      AlwaysStoppedAnimation(Colors.teal)),
+                    )),
+                ):SizedBox.shrink(),
                 ],
               ),
             ),
@@ -109,7 +147,13 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                       height: 36.0,
                       child: IconButton(
                         icon: Icon(Icons.link),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                            builder: (context)=> IndividualPost(
+                              docid: widget.doc.data['links'][index],
+                            ),
+                          ));
+                        },
                         color: Colors.black.withOpacity(0.5),
                       ),
                     ),
@@ -124,29 +168,68 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   }
 }
 
+
+
 retDat(date) {
   return '${date.day.toString().padLeft(2, "0")}/${date.month.toString().padLeft(2, "0")}';
 }
 
-class UpcomingSchedule extends StatefulWidget {
+
+
+class IndividualPost extends StatefulWidget {
+  final docid;
+
+  const IndividualPost({Key key, this.docid}) : super(key: key);
   @override
-  _UpcomingScheduleState createState() => _UpcomingScheduleState();
+  _IndividualPostState createState() => _IndividualPostState();
 }
 
-class _UpcomingScheduleState extends State<UpcomingSchedule> {
+class _IndividualPostState extends State<IndividualPost> {
+
+  DocumentSnapshot doc;
+
+  getDoc()async{
+    await Firestore.instance.collection('Posts').document(widget.docid).get().then((ds){
+      posts.add(ds);
+      doc = ds;
+    });
+    if(mounted){
+      setState((){});
+    }
+    print('got the doc from docs, this is the docid');
+  }
+
+
+  @override
+  void initState() {
+    var ind = posts.indexWhere((d)=>d.documentID == widget.docid);
+    if(ind!= -1){
+      doc = posts[ind];
+      setState((){});
+    }else{
+      getDoc();
+    }
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: Offset(0, 4),
-            blurRadius: 8,
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Full Post'),
       ),
+      body: doc!=null?SingleChildScrollView(
+        child: PostWid(
+          actionUnavailable: true,
+          doc: doc,
+          update: (){
+            if(mounted){
+              setState((){});
+            }
+          },
+        ),
+      ):SizedBox.shrink(),
     );
   }
 }

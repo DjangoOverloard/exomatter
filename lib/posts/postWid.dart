@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PostWid extends StatefulWidget {
+  final actionUnavailable;
   final update;
   final doc;
 
-  const PostWid({Key key, this.doc, this.update}) : super(key: key);
+  const PostWid({Key key, this.doc, this.update, this.actionUnavailable}) : super(key: key);
   @override
   _PostWidState createState() => _PostWidState();
 }
@@ -217,7 +218,7 @@ class _PostWidState extends State<PostWid> {
                     )),
                 ):SizedBox.shrink(),
                 Spacer(),
-                SizedBox(
+                widget.actionUnavailable == null?SizedBox(
                   width: 36.0,
                   height: 36.0,
                   child: IconButton(
@@ -294,7 +295,7 @@ class _PostWidState extends State<PostWid> {
                       );
                     },
                   ),
-                ),
+                ):SizedBox.shrink(),
               ],
             ),
           ),

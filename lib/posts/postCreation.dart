@@ -148,7 +148,7 @@ class _PostCreationState extends State<PostCreation> {
                           : Text(
                               titleControl.text.trim().length != 0
                                   ? titleControl.text.trim()
-                                  : 'Wnat to write a post? Start from a title.',
+                                  : 'Want to write a post? Start from a title.',
                               style: TextStyle(
                                 color: titleControl.text.trim().length != 0
                                     ? Colors.black
