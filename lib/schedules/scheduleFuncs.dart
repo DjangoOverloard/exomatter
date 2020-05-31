@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exom/schedules/schedule_page.dart';
 
-
 bool voting = false;
 var voteScheduleLoading = '';
-changeVote(isUpvote, doneCallback, doc) async {
+changeVote(isUpvote, doneCallback, doc, schedules) async {
   if (!voting) {
     voting = true;
     var payload;
@@ -45,9 +44,12 @@ changeVote(isUpvote, doneCallback, doc) async {
         .collection('Schedules')
         .document(doc.documentID)
         .get()
-        .then((ds) {
-      schedules[schedules.indexWhere((d) => d.documentID == ds.documentID)] = ds;
-    });
+        .then(
+      (ds) {
+        schedules[schedules.indexWhere((d) => d.documentID == ds.documentID)] =
+            ds;
+      },
+    );
     voting = false;
     voteScheduleLoading = '';
     doneCallback();

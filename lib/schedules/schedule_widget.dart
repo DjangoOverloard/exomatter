@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 class ScheduleWidget extends StatefulWidget {
   final DocumentSnapshot doc;
   final update;
+  final schedules;
 
-  const ScheduleWidget({Key key, this.doc, this.update}) : super(key: key);
+  const ScheduleWidget({Key key, this.doc, this.update, this.schedules})
+      : super(key: key);
   @override
   _ScheduleWidgetState createState() => _ScheduleWidgetState();
 }
@@ -19,54 +21,65 @@ class ScheduleWidget extends StatefulWidget {
 Color _getIndexColor(double p) => Color.lerp(Colors.green, Colors.blue, p);
 
 class _ScheduleWidgetState extends State<ScheduleWidget> {
+  String get _displayTime {
+    final now = DateTime.now();
+    final displayToday =
+        '${now.day.toString().padLeft(2, "0")}/${now.month.toString().padLeft(2, "0")}';
+
+    if (widget.doc.data['displayTime'] == displayToday) return 'Today';
+    return (widget.doc.data['displayTime'] as String).replaceAll('/', '.');
+  }
+
   @override
   Widget build(BuildContext context) {
-      bool isVoting = voteScheduleLoading!=''?voteScheduleLoading.split(', ')[1] == widget.doc.documentID:false;
-    bool isUpvote = isVoting?voteScheduleLoading.split(', ')[0] == '1':null;
+    bool isVoting = voteScheduleLoading != ''
+        ? voteScheduleLoading.split(', ')[1] == widget.doc.documentID
+        : false;
+    bool isUpvote = isVoting ? voteScheduleLoading.split(', ')[0] == '1' : null;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding: EdgeInsets.only(bottom: 16),
-                  child: ExContainer(
-              width: double.infinity,
-              height: 75.0,
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IndicatorWidget(
-                    isActive: true,
+          child: ExContainer(
+            width: double.infinity,
+            height: 75.0,
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IndicatorWidget(
+                  isActive: true,
+                ),
+                SizedBox(width: 16.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        _displayTime,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Text(
+                        '${widget.doc.data['tagNames'].length} Activities',
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 16.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'Today',
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        Text(
-                          '${widget.doc.data['tagNames'].length} Activities',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ],
-                    ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_upward,
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_upward,
-                    ),
-                    color: Colors.black54,
-                    onPressed: () {
-                      changeVote(true, (){
-                        setState((){});
-                        widget.update();
-                      }, widget.doc);
-                    },
-                  ),
-                   Text(
+                  color: Colors.black54,
+                  onPressed: () {
+                    changeVote(true, () {
+                      setState(() {});
+                      widget.update();
+                    }, widget.doc, widget.schedules);
+                  },
+                ),
+                Text(
                   '${widget.doc.data['upvotes'].length}',
                   style: TextStyle(
                     color: Colors.teal,
@@ -76,31 +89,33 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                  (isUpvote!=null?isUpvote:false)?Padding(
-                  padding: EdgeInsets.only(left: 5),
-                                  child: Container(
-                    height: 15, 
-                    width: 15,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.0,
-                        valueColor: 
-                      AlwaysStoppedAnimation(Colors.teal)),
-                    )),
-                ):SizedBox.shrink(),
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_downward,
-                    ),
-                    color: Colors.black54,
-                    onPressed: () {
-                      changeVote(false, (){
-                        setState((){});
-                        widget.update();
-                      }, widget.doc);
-                    },
+                (isUpvote != null ? isUpvote : false)
+                    ? Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Container(
+                            height: 15,
+                            width: 15,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.teal)),
+                            )),
+                      )
+                    : SizedBox.shrink(),
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_downward,
                   ),
-                   Text(
+                  color: Colors.black54,
+                  onPressed: () {
+                    changeVote(false, () {
+                      setState(() {});
+                      widget.update();
+                    }, widget.doc, widget.schedules);
+                  },
+                ),
+                Text(
                   '${widget.doc.data['downvotes'].length}',
                   style: TextStyle(
                     color: Colors.teal,
@@ -110,21 +125,23 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                  (isUpvote!=null?!isUpvote:false)?Padding(
-                  padding: EdgeInsets.only(left: 5),
-                                  child: Container(
-                    height: 15, 
-                    width: 15,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.0,
-                        valueColor: 
-                      AlwaysStoppedAnimation(Colors.teal)),
-                    )),
-                ):SizedBox.shrink(),
-                ],
-              ),
+                (isUpvote != null ? !isUpvote : false)
+                    ? Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Container(
+                            height: 15,
+                            width: 15,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.teal)),
+                            )),
+                      )
+                    : SizedBox.shrink(),
+              ],
             ),
+          ),
         ),
         ...(widget.doc.data['activities'] as List).map(
           (activity) {
@@ -138,7 +155,8 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ExContainer(
-                indicatorColor: _getIndexColor(index / widget.doc.data['activities'].length),
+                indicatorColor: _getIndexColor(
+                    index / widget.doc.data['activities'].length),
                 width: double.infinity,
                 height: 70,
                 padding: const EdgeInsets.all(16.0),
@@ -172,7 +190,7 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                         icon: Icon(Icons.link),
                         onPressed: () {
                           Navigator.of(context).push(CupertinoPageRoute(
-                            builder: (context)=> IndividualPost(
+                            builder: (context) => IndividualPost(
                               docid: widget.doc.data['links'][index],
                             ),
                           ));
@@ -191,13 +209,9 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
   }
 }
 
-
-
 retDat(date) {
   return '${date.day.toString().padLeft(2, "0")}/${date.month.toString().padLeft(2, "0")}';
 }
-
-
 
 class IndividualPost extends StatefulWidget {
   final docid;
@@ -208,33 +222,34 @@ class IndividualPost extends StatefulWidget {
 }
 
 class _IndividualPostState extends State<IndividualPost> {
-
   DocumentSnapshot doc;
 
-  getDoc()async{
-    await Firestore.instance.collection('Posts').document(widget.docid).get().then((ds){
+  getDoc() async {
+    await Firestore.instance
+        .collection('Posts')
+        .document(widget.docid)
+        .get()
+        .then((ds) {
       posts.add(ds);
       doc = ds;
     });
-    if(mounted){
-      setState((){});
+    if (mounted) {
+      setState(() {});
     }
     print('got the doc from docs, this is the docid');
   }
 
-
   @override
   void initState() {
-    var ind = posts.indexWhere((d)=>d.documentID == widget.docid);
-    if(ind!= -1){
+    var ind = posts.indexWhere((d) => d.documentID == widget.docid);
+    if (ind != -1) {
       doc = posts[ind];
-      setState((){});
-    }else{
+      setState(() {});
+    } else {
       getDoc();
     }
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -242,19 +257,22 @@ class _IndividualPostState extends State<IndividualPost> {
       appBar: AppBar(
         title: Text('Full Post'),
       ),
-      body: doc!=null?SingleChildScrollView(
-        child: PostWid(
-          actionUnavailable: true,
-          doc: doc,
-          update: (){
-            var ind = posts.indexWhere((d)=>d.documentID == widget.docid);
-             doc = posts[ind];
-            if(mounted){
-              setState((){});
-            }
-          },
-        ),
-      ):SizedBox.shrink(),
+      body: doc != null
+          ? SingleChildScrollView(
+              child: PostWid(
+                actionUnavailable: true,
+                doc: doc,
+                update: () {
+                  var ind =
+                      posts.indexWhere((d) => d.documentID == widget.docid);
+                  doc = posts[ind];
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            )
+          : SizedBox.shrink(),
     );
   }
 }

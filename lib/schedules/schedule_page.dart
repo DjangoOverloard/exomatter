@@ -2,18 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:exom/schedules/schedule_widget.dart';
 import 'package:flutter/material.dart';
 
-List<DocumentSnapshot> schedules = [];
-
 class SchedulePage extends StatefulWidget {
   @override
   _SchedulePageState createState() => _SchedulePageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class _SchedulePageState extends State<SchedulePage>
+    with SingleTickerProviderStateMixin {
+  List<DocumentSnapshot> schedules = [];
   var moreAvailable = true;
   var fetching = false;
   bool ready = false;
   ScrollController scr = new ScrollController();
+  TabController tabs;
   var curPage = 0;
 
   getSchedules() async {
@@ -25,12 +26,13 @@ class _SchedulePageState extends State<SchedulePage> {
       await (schedules.length != 0
               ? query.startAfterDocument(schedules.last)
               : query)
-          .limit(2)
+          .limit(10)
           .getDocuments()
           .then((qs) {
         if (qs.documents.length != 0) {
           schedules.addAll(qs.documents);
         }
+        tabs = TabController(length: schedules.length, vsync: this);
         moreAvailable = qs.documents.length == 5;
       });
       fetching = false;
@@ -38,9 +40,9 @@ class _SchedulePageState extends State<SchedulePage> {
         ready = true;
         setState(() {});
       }
-    }else{
+    } else {
       ready = true;
-      setState((){});
+      setState(() {});
     }
   }
 
@@ -48,6 +50,12 @@ class _SchedulePageState extends State<SchedulePage> {
   void initState() {
     getSchedules();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    tabs.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,17 +68,25 @@ class _SchedulePageState extends State<SchedulePage> {
       );
     }
 
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(16.0),
-      child: ScheduleWidget(
-        update: (){
-          if(mounted){
-            setState((){});
-          }
-        },
-        doc: schedules[curPage],
-      ),
+    return TabBarView(
+      controller: tabs,
+      children: [
+        ...schedules.map(
+          (v) => SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(16.0),
+            child: ScheduleWidget(
+              update: () {
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+              doc: v,
+              schedules: schedules,
+            ),
+          ),
+        )
+      ],
     );
   }
 }
