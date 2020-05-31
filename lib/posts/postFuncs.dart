@@ -186,6 +186,7 @@ bool fetchingNew = false;
 fetchNewPosts(fetchedCallback) async {
   if (!fetchingNew) {
     fetchingNew = true;
+    fetchMore = true;
     await fetchPosts(() {}, (val) {
       if (val.length == 10) {
         posts.clear();
