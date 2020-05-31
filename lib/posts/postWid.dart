@@ -56,7 +56,7 @@ class _PostWidState extends State<PostWid> {
                       Padding(
                         padding: EdgeInsets.only(left: 5),
                         child: SizedBox(
-                          height: 10,
+                          height: widget.doc.data['spaceOrganization']!='jaxa'?10:20,
                           child: Image(
                             fit: BoxFit.fitHeight,
                             image: AssetImage(

@@ -22,31 +22,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget get _body {
-    return drawerPage == 0
-        ? (bottomBarPage == 0 ? PostPage() : SchedulePage())
-        : SpaceFacts();
+    return bottomBarPage == 0 ? PostPage() : SchedulePage();
   }
 
   String get _title {
     return drawerPage == 0
         ? (bottomBarPage == 0 ? 'Recent Posts' : 'Formed Schedules')
         : 'Space Facts';
-  }
-
-  Widget get _bottomAppBar {
-    return drawerPage == 0
-        ? BottomNavigationBar(
-            currentIndex: bottomBarPage,
-            onTap: (val) {
-              bottomBarPage = val;
-              setState(() {});
-            },
-            items: List.generate(2, (index) {
-              return BottomNavigationBarItem(
-                  icon: Icon(index == 0 ? Icons.home : Icons.assignment),
-                  title: Text(index == 0 ? 'Posts' : 'Schedules'));
-            }))
-        : null;
   }
 
   @override
@@ -75,8 +57,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: _body,
-      bottomNavigationBar: drawerPage == 0
-          ? BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
               currentIndex: bottomBarPage,
               onTap: (val) {
                 bottomBarPage = val;
@@ -86,8 +67,7 @@ class _HomePageState extends State<HomePage> {
                 return BottomNavigationBarItem(
                     icon: Icon(index == 0 ? Icons.home : Icons.assignment),
                     title: Text(index == 0 ? 'Posts' : 'Schedules'));
-              }))
-          : null,
+              })),
     );
   }
 }
@@ -109,7 +89,7 @@ class DrawerWidget extends StatelessWidget {
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: Column(
-                      children: List.generate(2, (index) {
+                      children: List.generate(1, (index) {
                     return GestureDetector(
                       onTap: () {
                         drawerPage = index;
@@ -126,14 +106,14 @@ class DrawerWidget extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(index == 0 ? 'Home Page' : 'Space Facts',
+                              Text('Home Page',
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: drawerPage == index
                                           ? Colors.white
                                           : Colors.black)),
                               Icon(
-                                index == 0 ? Icons.home : Icons.book,
+                                Icons.home,
                                 size: 25,
                                 color: drawerPage == index
                                     ? Colors.white
