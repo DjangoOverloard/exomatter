@@ -66,6 +66,11 @@ class _SchedulePageState extends State<SchedulePage> {
       physics: BouncingScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
       child: ScheduleWidget(
+        update: (){
+          if(mounted){
+            setState((){});
+          }
+        },
         doc: schedules[curPage],
       ),
     );

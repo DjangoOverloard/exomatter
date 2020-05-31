@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 
 class ScheduleWidget extends StatefulWidget {
   final DocumentSnapshot doc;
+  final update;
 
-  const ScheduleWidget({Key key, this.doc}) : super(key: key);
+  const ScheduleWidget({Key key, this.doc, this.update}) : super(key: key);
   @override
   _ScheduleWidgetState createState() => _ScheduleWidgetState();
 }
@@ -61,9 +62,20 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                     onPressed: () {
                       changeVote(true, (){
                         setState((){});
+                        widget.update();
                       }, widget.doc);
                     },
                   ),
+                   Text(
+                  '${widget.doc.data['upvotes'].length}',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0,
+                    height: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                   (isUpvote!=null?isUpvote:false)?Padding(
                   padding: EdgeInsets.only(left: 5),
                                   child: Container(
@@ -84,9 +96,20 @@ class _ScheduleWidgetState extends State<ScheduleWidget> {
                     onPressed: () {
                       changeVote(false, (){
                         setState((){});
+                        widget.update();
                       }, widget.doc);
                     },
                   ),
+                   Text(
+                  '${widget.doc.data['downvotes'].length}',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0,
+                    height: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                   (isUpvote!=null?!isUpvote:false)?Padding(
                   padding: EdgeInsets.only(left: 5),
                                   child: Container(
@@ -224,6 +247,8 @@ class _IndividualPostState extends State<IndividualPost> {
           actionUnavailable: true,
           doc: doc,
           update: (){
+            var ind = posts.indexWhere((d)=>d.documentID == widget.docid);
+             doc = posts[ind];
             if(mounted){
               setState((){});
             }
